@@ -15,7 +15,7 @@ for d in $(ls conf.d/ | sort -n); do
 		echo "fwe: $fwe"
 		[[ $file =~ .*gpg$ ]] && \
 			echo -e "\nDecrypting $file" && \
-			gpg2 --decrypt --quiet "$file" > "${fwe}.enc"
+			gpg2 --decrypt --quiet "$file" > "${fwe}"
         done;
 done;
 
