@@ -1,0 +1,12 @@
+alias diff='diff --color=auto'
+alias vi='nvim'
+alias vim='nvim'
+alias pip=pip3
+alias cb='xclip -sel clip'
+alias ls='ls --color=always'
+alias lsa='ls -al --color=always'
+alias lsd='ls -l --color=always | grep --color=never "^d"'
+alias less='less -RX'
+#alias grep='grep --color=always'
+alias diff='diff --color=always'
+alias op='xdg-open'

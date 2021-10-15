@@ -1,0 +1,3 @@
+alias dl="cd ~/Downloads/"
+alias dc="cd ~/Documents/"
+alias cardb="cd ~/Documents/card_brand/"

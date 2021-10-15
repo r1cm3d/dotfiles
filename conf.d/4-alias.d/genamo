@@ -1,0 +1,1 @@
+alias genamo='printf "%012g" $(shuf -i 100-200 -n 1) | cb'

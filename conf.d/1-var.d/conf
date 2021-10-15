@@ -1,0 +1,6 @@
+export CONFDIR="${CONFIGURATION}/conf.d"
+export VAR="${CONFDIR}/1-var.d"
+export LIB="${CONFDIR}/2-lib.d"
+export FUNC="${CONFDIR}/3-func.d"
+export ALIAS="${CONFDIR}/4-alias.d"
+export EXEC="${CONFDIR}/5-exec.d"

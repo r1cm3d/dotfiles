@@ -1,0 +1,2 @@
+alias conr1cm3d='nmcli connection up r1cm3d'
+alias consimfibra='nmcli connection up SimFibra'

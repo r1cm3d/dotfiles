@@ -1,0 +1,2 @@
+alias kgp='kubectl get pods -n ext'
+alias kgd='kubectl get deployments -n ext'

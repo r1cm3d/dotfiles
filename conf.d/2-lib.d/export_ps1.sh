@@ -1,0 +1,4 @@
+export_PS1() {
+	local padlock=$([[ -n "$BW_SESSION" ]] && echo '🔓' || echo '🔒')
+	export PS1="${padlock} $USER_COLOR\u$AT_COLOR@$HOSTNAME_COLOR${HOSTNAME%%.*}$PWD_COLOR:\w\n$USER_COLOR>$GIT_COLOR $(parse_git_branch) $ID_COLOR\\$ $NONE"
+}

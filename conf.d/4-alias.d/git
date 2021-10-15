@@ -1,0 +1,6 @@
+alias ga='git add .'
+alias gc='git commit -s'
+alias gs='git status -s'
+alias gp='git push'
+alias gd='git diff'
+alias guf='git pull -X theirs origin master && git fetch'

@@ -1,0 +1,7 @@
+alias con='cd $CONFIGURATION'
+alias proj='cd $PROJECTS'
+alias cle='cd $CLEARING'
+alias aut='cd $AUTHORIZER'
+alias par='cd $PARSER'
+alias dis='cd $DISTRIBUTOR'
+alias not='cd $NOTES'

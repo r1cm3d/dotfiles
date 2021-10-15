@@ -1,0 +1,2 @@
+alias lr="gh release list -L 1 | grep -Po '\d+\.\d+\.\d+' | head -n 1"
+alias rb="gh release list -L 2 | grep -Po '\d+\.\d+\.\d+' | tail -n 1"

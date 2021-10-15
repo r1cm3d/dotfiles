@@ -1,0 +1,5 @@
+alias gl2fa='vault2facb "$VID_GL"'
+alias m2fa='vault2facb "$VID_GOOGLE"'
+alias pismai2fa='vault2facb "$VID_GOOGLE_PISMO"'
+alias gh2fa='vault2facb "$VID_GH"'
+alias okta2fa='vault2facb "$VID_OKTA"'
