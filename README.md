@@ -24,10 +24,8 @@ otherwise it could create a cyclic dependency.
 │   │   ├── docker
 │   │   ├── path
 │   │   ├── project.enc
-│   │   ├── project.enc.enc
 │   │   ├── project.enc.gpg
 │   │   ├── vault.enc
-│   │   ├── vault.enc.enc
 │   │   └── vault.enc.gpg
 │   ├── 2-lib.d
 │   │   ├── encrypt
@@ -41,27 +39,21 @@ otherwise it could create a cyclic dependency.
 │   │   ├── fl
 │   │   ├── git
 │   │   ├── logrole.enc
-│   │   ├── logrole.enc.enc
 │   │   ├── logrole.enc.gpg
 │   │   ├── metabase.enc
-│   │   ├── metabase.enc.enc
 │   │   ├── metabase.enc.gpg
 │   │   ├── pass
 │   │   ├── punclo.enc
-│   │   ├── punclo.enc.enc
 │   │   ├── punclo.enc.gpg
 │   │   ├── rdp.enc
-│   │   ├── rdp.enc.enc
 │   │   ├── rdp.enc.gpg
 │   │   ├── sc
 │   │   ├── str
 │   │   ├── sys
 │   │   ├── vpn.enc
-│   │   ├── vpn.enc.enc
 │   │   └── vpn.enc.gpg
 │   ├── 4-alias.d
 │   │   ├── arc.enc
-│   │   ├── arc.enc.enc
 │   │   ├── arc.enc.gpg
 │   │   ├── commands
 │   │   ├── dir
