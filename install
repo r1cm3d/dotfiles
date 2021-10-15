@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source conf.d/2-lib.d/encrypt
-
 while read l; do
 	[[ $(command -v "$l") ]] || \
 		echo "$l not installed. Some functions may not work properly"
@@ -28,9 +26,6 @@ cp -v .bashrc ~/.bashrc
 			cp -fRv ~/.mutt ~/.mutt.bkp)
 echo -e "\nCopying .mutt"
 cp -vfR .mutt ~/.mutt
-
-#echo -e "\nEncrypting sensible files"
-#encrypt
 
 echo -e "Reloading bash"
 exec bash
