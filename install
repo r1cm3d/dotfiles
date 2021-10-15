@@ -1,0 +1,36 @@
+#!/bin/bash
+
+source conf.d/2-lib.d/encrypt
+
+while read l; do
+	[[ $(command -v "$l") ]] || \
+		echo "$l not installed. Some functions may not work properly"
+done < <(cat dep)
+
+for d in $(ls conf.d/ | sort -n); do
+        dir="conf.d/${d}"
+        for f in $(ls $dir | sort -n); do
+                file="${dir}/${f}"
+		fwe=$(echo -n "$file" | sed -r 's/.gpg//g')
+		echo "fwe: $fwe"
+		[[ $file =~ .*gpg$ ]] && \
+			echo -e "\nDecrypting $file" && \
+			gpg2 --decrypt --quiet "$file" > "${fwe}.enc"
+        done;
+done;
+
+[[ -f ~/.bashrc ]] && (echo -e "\nCreating .bashrc backup" && \
+			cp -v ~/.bashrc ~/.bashrc.bkp)
+echo -e "\nCopying bashrc"
+cp -v .bashrc ~/.bashrc
+
+[[ -d ~/.mutt ]] && (echo -e "\nCreating .mutt backup" && \
+			cp -fRv ~/.mutt ~/.mutt.bkp)
+echo -e "\nCopying .mutt"
+cp -vfR .mutt ~/.mutt
+
+#echo -e "\nEncrypting sensible files"
+#encrypt
+
+echo -e "Reloading bash"
+exec bash

@@ -1,0 +1,10 @@
+source "gpg2 --decrypt --quiet ~/.mutt/gmail.gpg |"
+set header_cache = "~/.mutt/cache/headers"
+set message_cachedir = "~/.mutt/cache/bodies"
+set certificate_file = "~/.mutt/certificates"
+set ssl_force_tls = yes
+set editor = "vim"
+set edit_headers = yes
+set charset = UTF-8
+set use_from = yes
+unset use_domain

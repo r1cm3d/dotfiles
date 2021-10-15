@@ -1,0 +1,16 @@
+#!/bin/bash
+
+encrypt() {
+	for d in $(ls --color=none "$CONFDIR" | sort -n); do
+        	dir="${CONFDIR}/${d}"
+	        for f in $(ls --color=none $dir | sort -n); do
+        	        file="${dir}/${f}"
+			[[ $file =~ .*enc$ ]] && \
+				(echo -e "\nEncrypting $file" && \
+				gpg2 	--yes \
+					--quiet \
+					--recipient "$GPGKEY" \
+					--encrypt "$file")
+        	done;
+	done;
+}
