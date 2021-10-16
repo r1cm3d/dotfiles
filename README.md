@@ -1,6 +1,16 @@
 # dotfiles
 It contains my configuration files (dotfiles). Besides that, it also has my own
 functions, aliases and environment variables.
+![sc.png](sc.png)
+
+## Table of Contents
+* [dotfiles](#dotfiles)
+* [How it works](#how-it-works)
+* [Structure](#structure)
+* [Installation](#installation)
+* [Sensible Data](#sensible-data)
+* [Colors setup](#colors-setup)
+
 
 ### How it works
 It loads all files of each directory contained into `$CONFIGURATION/conf.d`. Those
@@ -76,7 +86,7 @@ otherwise it could create a cyclic dependency.
 └── README.md
 ```
 
-### Installing
+### Installation
 Just run:
 ``` sh
 ./install
@@ -88,4 +98,26 @@ extracts `.mutt` configuration files.
 ### Sensible data
 Files with `*enc` suffix, is ignored by git. If you need upload those files,
 encrypt them using `encrypt` function. Only encrypted `*gpg` files should be
-upload in the repo.
+uploaded in the repo.
+
+### Colors setup
+To set up PS1 colors, edit the file `$VAR/color`
+
+``` bash
+vim $VAR/color
+```
+
+Just edit the variable that refers to property you want to change.
+For instance, for change the **HOSTNAME** to bold+violet:
+
+```  bash
+HOSTNAME_COLOR=$BV
+```
+
+thereafter
+
+``` bash
+reload
+```
+
+To rerun bash environment
