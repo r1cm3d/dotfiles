@@ -4,6 +4,7 @@ functions, aliases and environment variables.
 
 ### Screenshot
 ![sc.png](sc.png)
+![sc_zoom.png](sc_zoom.png)
 
 ## Table of Contents
 * [dotfiles](#dotfiles)
