@@ -1,6 +1,11 @@
 aws
 bw
+cheat
 docker-compose
+dog
+duf
+dust
+gping
 jq
 kubectl
 mutt
@@ -11,5 +16,6 @@ pip3
 playerctl
 remmina
 saml2aws
+tldr
 tmux
 xclip
