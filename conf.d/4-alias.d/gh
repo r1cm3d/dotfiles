@@ -1,2 +1,4 @@
 alias lr="gh release list -L 1 | grep -Po '\d+\.\d+\.\d+' | head -n 1"
 alias rb="gh release list -L 2 | grep -Po '\d+\.\d+\.\d+' | tail -n 1"
+alias prurl='gh pr view --json url --jq .url'
+alias prurlcb='gh pr view --json url --jq .url | cb'
