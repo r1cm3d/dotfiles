@@ -202,6 +202,19 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
+#white #ffffff
+#black #000000
+#green #4AF626
+
+# class                 border  backgr. text    indicator child_border
+client.focused          #4AF626 #4AF626 #000000 #4AF626   #4AF626
+client.focused_inactive #4AF626 #000000 #4AF626 #000000   #000000
+client.unfocused        #4AF626 #000000 #4AF626 #000000   #000000
+client.urgent           #2f343a #900000 #ffffff #900000   #900000
+client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+
+client.background       #000000
+
 # resize window (you can also use the mouse for that)
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
@@ -234,8 +247,20 @@ bindsym --release $mod+x exec --no-startup-id import /tmp/latest-screenshot.png
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
+#white #ffffff
+#black #000000
+#green #4AF626
 bar {
-        status_command i3status
+  colors {
+      background #000000
+      statusline #4AF626
+      separator  #4AF626
+      focused_workspace #000000 #4AF626 #000000
+      active_workspace #000000 #000000 #4AF626
+      inactive_workspace #000000 #000000 #4AF626
+  }
+
+  status_command i3status
 	position top
 	output primary
 	tray_output primary
@@ -244,7 +269,16 @@ bar {
 }
 
 bar {
-        status_command i3status
+  colors {
+      background #000000
+      statusline #4AF626
+      separator  #4AF626
+      focused_workspace #000000 #4AF626 #000000
+      active_workspace #4AF626 #000000 #4AF626
+      inactive_workspace #4AF626 #000000 #4AF626
+  }
+
+  status_command i3status
 	position top
 	output $laptop_mon 
 	font $bar_font 
@@ -252,7 +286,16 @@ bar {
 }
 
 bar {
-        status_command i3status
+  colors {
+      background #000000
+      statusline #4AF626
+      separator  #4AF626
+      focused_workspace #000000 #4AF626 #000000
+      active_workspace #4AF626 #000000 #4AF626
+      inactive_workspace #4AF626 #000000 #4AF626
+  }
+
+  status_command i3status
 	position top
 	output $lg_mon
 	font $bar_font 
