@@ -1,4 +1,4 @@
-EDITOR=/usr/bin/nvim
+EDITOR=/usr/bin/vim
 HISTCONTROL=ignoreboth
 HISTSIZE=1000
 HISTFILESIZE=2000

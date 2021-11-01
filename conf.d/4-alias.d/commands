@@ -1,6 +1,5 @@
 alias diff='diff --color=auto'
-alias vi='nvim'
-alias vim='nvim'
+alias vi='vim'
 alias pip=pip3
 alias cb='xclip -sel clip'
 alias ls='ls --color=always'
