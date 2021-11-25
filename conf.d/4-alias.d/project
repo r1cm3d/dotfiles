@@ -5,3 +5,5 @@ alias aut='cd $AUTHORIZER'
 alias par='cd $PARSER'
 alias dis='cd $DISTRIBUTOR'
 alias not='cd $NOTES'
+alias cleres="cd $CLEARING/src/test/resources/files/"
+alias todo="vim $NOTES/todo_pinned.md"
