@@ -1,0 +1,2 @@
+alias pscpu="ps --user $(id -u) --sort -pcpu --format '%cpu %mem size fname pid' | head -n 10"
+alias psmem="ps --user $(id -u) --sort -size --format '%cpu %mem size fname pid' | head -n 10"
