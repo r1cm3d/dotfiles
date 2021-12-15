@@ -1,0 +1,21 @@
+cfba() {
+        local PROJECT_NAME="$1"
+        cfb 'api-ci' "$PROJECT_NAME"
+}
+
+cfbw() {
+        local PROJECT_NAME="$1"
+        cfb 'worker-ci' "$PROJECT_NAME"
+}
+
+cfbr() {
+        codefresh get build -r "$(git log -n 1 --pretty=%H)"
+}
+
+cfb() {
+        local TYPE="$1"
+        local PROJECT_NAME="$2"
+        local BRANCH=$(git branch --show-current)
+        op=$(codefresh get build --pipeline "${PROJECT_NAME}/${TYPE}" -o json) && \
+                echo "$op" | jq ' .[] | select(.success == "running") | select(.branch == "$BRANCH")'
+}
