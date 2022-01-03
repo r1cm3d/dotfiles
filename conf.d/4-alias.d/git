@@ -1,5 +1,6 @@
 alias ga='git add .'
 alias gc='git commit -s'
+alias gca='git commit --amend'
 alias gs='git status -s'
 alias gp='git push'
 alias gpf='git push --force'
