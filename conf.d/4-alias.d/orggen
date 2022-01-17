@@ -1,0 +1,1 @@
+alias orggen='echo -n "TN-$(uuidgen)"|cb'
