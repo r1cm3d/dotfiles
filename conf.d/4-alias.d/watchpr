@@ -1,0 +1,1 @@
+alias watchpr="watch -n 2 'gh pr view --json reviews --jq \".[] | sort_by(.submittedAt) | reverse[]\" | jq .'"
