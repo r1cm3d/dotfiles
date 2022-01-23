@@ -1,0 +1,1 @@
+alias coreextcon='mysql -u "$(coreextuser)" -h "$(coreexturl)" "pismolabs" --password'
