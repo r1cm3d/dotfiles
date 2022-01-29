@@ -1,0 +1,3 @@
+VPN_PISMO_HOST="ec2-54-207-55-97.sa-east-1.compute.amazonaws.com"
+VPN_PISMO_USER="ricardo.medeiros"
+VPN_PISMO_CERT="2f6a13656fe4b4be97fd7e513df9aba66a7794b8c4c4a2b2d27626bd3557365f"
