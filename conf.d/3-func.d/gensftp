@@ -1,0 +1,77 @@
+#!/bin/bash
+
+gensftp() {
+        while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
+        -o | --orgid )
+                shift; local ORG_ID="$1"
+                ;;
+        -n | --orgname)
+                shift; local ORG_NAME="$1"
+                ;;
+        -e | --endpoint)
+                shift; local ENDPOINT="$1"
+                ;;
+        -u | --user)
+                shift; local SFTP_USER="$1"
+                ;;
+        -v | --verbose)
+                local VERBOSE=1
+                ;;
+        -h | --help)
+                echo -e "\ngensftp --orgid 'TN-UUID' --orgname 'zambas' --user 'Z000666' --endpoint '000042'\n"
+                return 0
+        esac; shift; done
+        if [[ "$1" == '--' ]]; then shift; fi
+
+        export AWS_REGION='sa-east-1'
+        local TAGS=('protocol=sftp' 'squad=pci-authorizations' 'env=ext' 'service=clearging' 'network=mastercard')
+        local HAS_JQ=$(command -v jq)
+
+        if [[ -z "$ORG_ID" ]]; then
+                echo -e "\nORG_ID is empty\n"
+                echo -e "\ngensftp --orgid 'TN-UUID' --orgname 'zambas' --user 'Z000666' --endpoint '000042'\n"
+                unset AWS_REGION
+                return 1
+        fi
+        
+        if [[ -z "$ORG_NAME" ]]; then
+                echo -e "\nORG_NAME is empty\n"
+                echo -e "\ngensftp --orgid 'TN-UUID' --orgname 'zambas' --user 'Z000666' --endpoint '000042'\n"
+                unset AWS_REGION
+                return 1
+        fi
+
+        if [[ -n "$ENDPOINT" ]]; then
+                TAGS+=("endpoint=$ENDPOINT")
+
+                if [[ -n $VERBOSE ]]; then
+                        echo -e "\nAdding ($ENDPOINT) as endpoint tag.\n"
+                fi
+        fi
+
+        if [[ -n "$SFTP_USER" ]]; then
+                TAGS+=("sftpuser=$SFTP_USER")
+
+                if [[ -n $VERBOSE ]]; then
+                        echo -e "\nAdding ($SFTP_USER) as sftpuser tag.\n"
+                fi
+        fi
+
+        local STR_TAGS="${TAGS[@]}"
+        STR_TAGS=${STR_TAGS// /,}
+        local PRINTER=$([[ -n "$HAS_JQ" ]] && echo 'jq .' || echo "awk '{print $1}'")
+
+        if [[ -n $VERBOSE ]]; then
+                echo -e "\nCreating public key for ($ORG_ID - $ORG_NAME) with tags ($STR_TAGS).\n"
+        fi
+        
+        keym secretsmanager \
+             --name "$ORG_ID" \
+             --description "$ORG_NAME RSA key for SFTP exchange" \
+             --tags "$STR_TAGS" | \
+        eval "$PRINTER" | \
+        tee /tmp/keym.log
+
+        unset AWS_REGION
+        grep -qi 'error' /tmp/keym.log && return 1 || return 0
+}
