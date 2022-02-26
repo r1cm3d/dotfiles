@@ -1,0 +1,5 @@
+Hot keys    ~/Library/Preferences/com.apple.symbolichotkeys.plist 
+
+The App shortcuts  ~/Library/Preferences/.GlobalPreferences.plist
+
+The Services shortcuts   ~/Library/Preferences/pbs.plist
