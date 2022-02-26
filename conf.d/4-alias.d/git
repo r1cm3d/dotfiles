@@ -1,4 +1,6 @@
 alias ga='git add .'
+alias gw='git switch'
+alias gwn='git switch -c'
 alias gb='git branch'
 alias gc='git commit -s'
 alias gca='git commit --amend'

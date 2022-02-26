@@ -1,1 +1,2 @@
-alias orggen='echo -n "TN-$(uuidgen)"|cb'
+alias orggen='echo -n "TN-$(uuidgen)"'
+alias orggencb='echo -n "TN-$(uuidgen)"|cb'

@@ -1,5 +1,12 @@
 cb() {
-	xclip -sel clip
+        local so="$(uname)"
+        local command=$([[ "${so^^}" = 'LINUX' ]] && echo -n 'xclip -sel clip' || echo -n 'pbcopy')
+
+        $command
+}
+
+pas() {
+        pbpaste
 }
 
 2fa() {
@@ -42,4 +49,8 @@ vaultgpcb() {
 
 vault2facb() {
 	vault2fa "$1" | cb
+}
+
+vaultgucb() {
+	vaultgu "$1" | cb
 }

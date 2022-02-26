@@ -1,6 +1,6 @@
 prtitle() {
         local JIRA_KEY="$(git branch --show-current | \
-                          grep -Po 'pismo-[^_]+' | \
+                          grep -Eo 'pismo-[^_]+' | \
                           awk '{print toupper($0)}' )"
         echo "[$JIRA_KEY] - $(git log -n 1 HEAD --pretty=%s)"
 }
