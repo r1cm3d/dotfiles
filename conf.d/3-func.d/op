@@ -1,0 +1,5 @@
+op() {
+        local SO="$(uname)"
+        local COMMAND=$([[ "${SO,,}" == 'linux' ]] && echo -n 'xdg-open' || echo -n 'open')
+        eval "$COMMAND" $@
+}

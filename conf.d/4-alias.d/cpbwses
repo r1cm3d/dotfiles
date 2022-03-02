@@ -1,0 +1,1 @@
+alias cpbwses='echo -n "$BW_SESSION" | cb'
