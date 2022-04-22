@@ -1,0 +1,4 @@
+alias emup='sudo emerge --ask --update --deep --with-bdeps=y @world'
+alias emsyn='sudo emerge --sync'
+alias emdc='sudo emerge --depclean'
+alias emsea='emerge --search'
