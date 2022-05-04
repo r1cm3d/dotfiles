@@ -2,6 +2,10 @@ dtbr() {
 	date +'%d/%m/%y %H:%M:%S'
 }
 
+hrbr() {
+	date +'%H:%M:%S'
+}
+
 dtiso8601() {
 	date --iso-8601=minutes
 }
