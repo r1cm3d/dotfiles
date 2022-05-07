@@ -29,64 +29,131 @@ otherwise it could create a cyclic dependency.
 ### Structure
 ``` shell
 .
+├── LICENSE
+├── README.md
 ├── conf.d
 │   ├── 1-var.d
+│   │   ├── acc.enc
+│   │   ├── acc.enc.gpg
+│   │   ├── android_id
 │   │   ├── color
 │   │   ├── conf
 │   │   ├── core
-│   │   ├── docker
+│   │   ├── dev
+│   │   ├── gpg
+│   │   ├── gpgkey.enc
+│   │   ├── gpgkey.enc.gpg
+│   │   ├── hash.enc
+│   │   ├── hash.enc.gpg
 │   │   ├── path
 │   │   ├── project.enc
 │   │   ├── project.enc.gpg
 │   │   ├── vault.enc
-│   │   └── vault.enc.gpg
+│   │   ├── vault.enc.gpg
+│   │   ├── vpn.enc
+│   │   ├── vpn.enc.gpg
 │   ├── 2-lib.d
 │   │   ├── encrypt
 │   │   ├── export_ps1
 │   │   └── pass
 │   ├── 3-func.d
+│   │   ├── auth.enc
+│   │   ├── auth.enc.gpg
+│   │   ├── awscli.enc
+│   │   ├── awscli.enc.gpg
 │   │   ├── bash
+│   │   ├── card.enc
+│   │   ├── card.enc.gpg
 │   │   ├── countdown
 │   │   ├── date
 │   │   ├── fc
 │   │   ├── fl
+│   │   ├── gensftp
 │   │   ├── git
+│   │   ├── gk-git.enc
+│   │   ├── gk-git.enc.gpg
+│   │   ├── logdocker.enc
+│   │   ├── logdocker.enc.gpg
+│   │   ├── logql.enc
+│   │   ├── logql.enc.gpg
 │   │   ├── logrole.enc
 │   │   ├── logrole.enc.gpg
 │   │   ├── metabase.enc
 │   │   ├── metabase.enc.gpg
+│   │   ├── op
 │   │   ├── pass
+│   │   ├── pis-git-rel.enc
+│   │   ├── pis-git-rel.enc.gpg
+│   │   ├── prtitle
 │   │   ├── punclo.enc
 │   │   ├── punclo.enc.gpg
-│   │   ├── rdp.enc
-│   │   ├── rdp.enc.gpg
 │   │   ├── sc
-│   │   ├── str
-│   │   ├── sys
-│   │   ├── vpn.enc
-│   │   └── vpn.enc.gpg
+│   │   ├── tenantlist.enc
+│   │   ├── tenantlist.enc.gpg
+│   │   ├── tenantlisthomolog.enc
+│   │   └── tenantlisthomolog.enc.gpg
 │   ├── 4-alias.d
 │   │   ├── arc.enc
 │   │   ├── arc.enc.gpg
+│   │   ├── authstat.enc
+│   │   ├── authstat.enc.gpg
 │   │   ├── commands
+│   │   ├── coreext
+│   │   ├── cpbwses
+│   │   ├── db
 │   │   ├── dir
+│   │   ├── docker
+│   │   ├── dockerd
+│   │   ├── edauth.enc
+│   │   ├── edauth.enc.gpg
+│   │   ├── edawscli.enc
+│   │   ├── edawscli.enc.gpg
+│   │   ├── edcard.enc
+│   │   ├── edcard.enc.gpg
+│   │   ├── edclear.enc
+│   │   ├── edclear.enc.gpg
+│   │   ├── edlogql.enc
+│   │   ├── edlogql.enc.gpg
+│   │   ├── emerge
 │   │   ├── genamo
+│   │   ├── gh
 │   │   ├── git
-│   │   ├── k8s
+│   │   ├── gk.enc
+│   │   ├── gk.enc.gpg
+│   │   ├── k8s.enc
+│   │   ├── k8s.enc.gpg
 │   │   ├── keyboard
+│   │   ├── nordlockermasterkey
+│   │   ├── orggen
 │   │   ├── pass
 │   │   ├── project
-│   │   ├── release
-│   │   └── twofa
-│   └── 5-exec.d
-│       ├── bash_completion
-│       ├── export_ps1
-│       ├── shopt
-│       └── tmux
+│   │   ├── ps
+│   │   ├── rdp.enc
+│   │   ├── rdp.enc.gpg
+│   │   ├── tutanota.enc
+│   │   ├── tutanota.enc.gpg
+│   │   ├── twofa
+│   │   ├── vpn.enc
+│   │   ├── vpn.enc.gpg
+│   │   ├── wifi.enc
+│   │   └── wifi.enc.gpg
+│   ├── 5-exec.d
+│   │   ├── bash_completion
+│   │   ├── export_ps1
+│   │   ├── shopt
+│   │   └── tmux
+│   └── 6-extfunc.d
+│       └── git
+├── darwin_kb_sc
+│   ├── INSTRUCTIONS
+│   ├── com.apple.symbolichotkeys.plist
+│   └── pbs.plist
 ├── dep
-├── install
-├── LICENSE
-└── README.md
+├── i3
+│   └── config
+├── i3status
+│   └── config
+└── install
 ```
 
 ### Installation
