@@ -1,4 +1,5 @@
 awscli
+barrier
 bw
 docker
 docker-compose
@@ -6,6 +7,8 @@ dog
 duf
 dust
 firefox
+ggrep (Darwin only)
+gnumeric
 golang
 gping
 gradle
@@ -17,12 +20,15 @@ kindle
 kubectl
 mutt
 oathtool
+openfortivpn
+openvpn
 pip3
 rust
 saml2aws
 sdkman
 slack
 spotify
+stats
 tldr
 tmux
 tree
