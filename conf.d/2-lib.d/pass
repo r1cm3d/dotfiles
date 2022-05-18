@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cb() {
         local so="$(uname)"
         local command=$([[ "${so^^}" = 'LINUX' ]] && echo -n 'xclip -sel clip' || echo -n 'pbcopy')
