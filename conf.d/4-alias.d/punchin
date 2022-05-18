@@ -1,0 +1,3 @@
+alias adpu='vaultgu "$VID_ADP"'
+alias adpp='vaultgp "$VID_ADP"'
+alias punchin='adpcli -u "$(adpu)" -p "$(adpp)" punchin'
