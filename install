@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# TODO:
+# - Change to use aliases rather than files;
+# - Copy vim files;
+# - Fix 'directory' bug when installs;
+# - Install shared resources VPN automatically;
+
 while read l; do
 	[[ $(command -v "$l") ]] || \
 		echo "$l not installed. Some functions may not work properly"
