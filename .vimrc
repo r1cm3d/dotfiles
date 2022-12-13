@@ -10,3 +10,4 @@ set incsearch
 set hlsearch
 set expandtab
 set scrolloff=3
+set encoding=utf8

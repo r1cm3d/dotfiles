@@ -13,3 +13,7 @@ dtiso8601() {
 dtemail() {
 	date --rfc-email
 }
+
+dtepoch() {
+        date +%s
+}
