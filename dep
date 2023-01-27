@@ -1,11 +1,14 @@
 awscli
+bandwhich
 barrier
+browsh
 bw
 docker
 docker-compose
 dog
 duf
 dust
+figlet
 firefox
 ggrep (Darwin only)
 gnumeric
@@ -29,6 +32,7 @@ sdkman
 slack
 spotify
 stats
+taskwarrior
 tldr
 tmux
 tree
