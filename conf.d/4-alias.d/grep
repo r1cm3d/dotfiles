@@ -1,0 +1,2 @@
+alias gi='grep -i'
+alias gv='grep -v'
