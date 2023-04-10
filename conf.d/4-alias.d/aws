@@ -1,0 +1,1 @@
+alias awsl='aws sso login --sso-session pismo'

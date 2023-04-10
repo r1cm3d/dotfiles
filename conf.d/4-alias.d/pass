@@ -1,4 +1,4 @@
-alias oktap='vaultgpcb "$VID_OKTA"'
+alias op='vaultgpcb "$VID_OKTA"'
 alias elp='vaultgpcb "$VID_ENGLISHLIVE"'
 alias awsperp='vaultgpcb "$VID_AWSPERSONAL"'
 alias pismaip='vaultgpcb "$VID_GOOGLE_PISMO"'
