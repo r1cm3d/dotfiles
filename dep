@@ -16,7 +16,6 @@ golang
 gping
 gradle
 groovy
-insomnia
 java
 jq
 kindle
@@ -40,3 +39,4 @@ vim
 whatsapp
 xclip
 xfreerdp
+yq
