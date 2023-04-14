@@ -22,6 +22,7 @@ set si
 set autowrite
 
 :packadd termdebug
+":packadd ale
 
 nmap <leader>nt :NERDTreeToggle<CR>
 nmap <leader>ntf :NERDTreeFind<CR>
