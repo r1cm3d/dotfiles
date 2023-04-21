@@ -1,5 +1,0 @@
-#!/bin/bash
-
-epdt() {
-        date +"%s"
-}
