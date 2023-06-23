@@ -1,0 +1,13 @@
+!#/bin/bash
+
+out() { printf "$1 $2\n" "${@:3}"; }
+err() { out "==> ERROR:" "$@"; } >&2
+warn() { out "==> WARNING:" "$@"; } >&2
+info() { out "==> INFO:" "$@"; }
+debug() { out "==> DEBUG:" "$@"; }
+fatal() { error "$@"; exit 1; }
+
+ignore_error() {
+  "$@" 2>/dev/null
+  return 0
+}
