@@ -1,0 +1,8 @@
+cc() {
+        local COLOR=$1
+        for i in {0..1}; do
+                sudo openrgb --device "$i" --color "$COLOR" >/dev/null
+        done
+        sudo liquidctl --match corsair set led color fixed "$COLOR" >/dev/null
+        razer-cli -d 'Razer DeathAdder V2' -c "$COLOR" >/dev/null
+}
