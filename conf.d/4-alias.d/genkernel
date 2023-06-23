@@ -1,0 +1,1 @@
+alias buildkernel='sudo genkernel --luks --lvm --no-zfs all'
