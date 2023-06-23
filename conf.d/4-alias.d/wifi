@@ -1,0 +1,1 @@
+alias lm4con='iwctl --passphrase="*NEiS8YQ" station wlan0 connect lm4'
