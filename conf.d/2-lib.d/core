@@ -1,4 +1,4 @@
-!#/bin/bash
+#!/bin/bash
 
 out() { printf "$1 $2\n" "${@:3}"; }
 err() { out "==> ERROR:" "$@"; } >&2
