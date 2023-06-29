@@ -20,9 +20,12 @@ set encoding=utf8
 set ai
 set si
 set autowrite
+set undodir=~/.vim/undo-dir
+set undofile
+set noswapfile
 
 :packadd termdebug
-":packadd ale
+:packadd ale
 
 nmap <leader>nt :NERDTreeToggle<CR>
 nmap <leader>ntf :NERDTreeFind<CR>
