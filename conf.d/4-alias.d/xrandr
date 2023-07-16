@@ -1,0 +1,5 @@
+alias hdmi='xrandr --output HDMI-A-0'
+alias hdmim='hdmi --mode 1920x1080'
+alias dp='xrandr --output DisplayPort-1 --mode 1920x1080'
+alias hdmil='hdmim --left-of DisplayPort-1'
+alias hdmir='hdmim --right-of DisplayPort-1'
