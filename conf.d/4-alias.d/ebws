@@ -1,0 +1,1 @@
+alias ebws='export $(tmux show-environment | grep -E BW_SESSION)'
