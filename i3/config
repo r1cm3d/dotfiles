@@ -186,15 +186,6 @@ bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
-workspace "1:dev" output $dell_mon 
-workspace "4:chrome" output $dell_mon 
-workspace "2:media" output $laptop_mon 
-workspace "3:message" output $lg_mon 
-workspace "6:firefox" output $lg_mon 
-
-assign [class="[Gg]oogle[- ]?[Cc]hrome"] "4:chrome"
-assign [class="[Ff]irefox"] "6:firefox"
-
 # reload the configuration file
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
@@ -205,11 +196,12 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 #white #ffffff
 #black #000000
 #green #4AF626
+#blue  #0000ff
 
 # class                 border  backgr. text    indicator child_border
-client.focused          #4AF626 #4AF626 #000000 #4AF626   #4AF626
-client.focused_inactive #4AF626 #000000 #4AF626 #000000   #000000
-client.unfocused        #4AF626 #000000 #4AF626 #000000   #000000
+client.focused          #0000ff #0000ff #000000 #0000ff   #0000ff
+client.focused_inactive #0000ff #000000 #0000ff #000000   #000000
+client.unfocused        #0000ff #000000 #0000ff #000000   #000000
 client.urgent           #2f343a #900000 #ffffff #900000   #900000
 client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 
