@@ -5,4 +5,9 @@ cc() {
         done
         sudo liquidctl --match corsair set led color fixed "$COLOR" >/dev/null
         razer-cli -d 'Razer DeathAdder V2' -c "$COLOR" >/dev/null
+        razer-cli -d 'Razer Huntsman Mini' -c "$COLOR" -e reactive >/dev/null
+        tmux set -g status-bg colour10
+        tmux set -g window-status-style fg=colour0
+        tmux set -g pane-border-style fg=colour2
+        tmux set -g pane-active-border-style fg=colour10
 }
