@@ -1,0 +1,1 @@
+alias gaic='echo -n "Commit the unstaged files describing the changes in the commit summary and body. Apply the commit guidelines previously sent and sign the commit off with my current user." | cb'
