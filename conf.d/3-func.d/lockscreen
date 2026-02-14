@@ -1,0 +1,18 @@
+lockscreen() {
+	local current_state=$(kreadconfig6 --file kscreenlockerrc --group Daemon --key Autolock 2>/dev/null || echo "true")
+
+	if [ "$current_state" = "false" ]; then
+		# Enable lockscreen
+		kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock true
+		kwriteconfig6 --file kscreenlockerrc --group Daemon --key LockOnResume true
+		kwriteconfig6 --file powermanagementprofilesrc --group AC --group DPMSControl --key idleTime 300
+		echo "Lockscreen turned on"
+	else
+		# Disable lockscreen
+		kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock false
+		kwriteconfig6 --file kscreenlockerrc --group Daemon --key LockOnResume false
+		kwriteconfig6 --file powermanagementprofilesrc --group AC --group DPMSControl --key idleTime 0
+		qdbus org.kde.screensaver /ScreenSaver org.freedesktop.ScreenSaver.SetActive false 2>/dev/null || true
+		echo "Lockscreen turned off"
+	fi
+}

@@ -1,0 +1,7 @@
+bws() {
+  if [ $# -eq 0 ]; then
+    echo "Usage: bws <search_term>"
+    return 1
+  fi
+  bw list items --search "$1" | jq .[].login
+}
