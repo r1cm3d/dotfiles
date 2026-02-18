@@ -1,0 +1,17 @@
+description = "Create a commit following project guidelines"
+prompt = """
+1. **Analyze the staged changes** by running `git diff --cached` to understand what is being committed.
+2. **Craft a commit message** following these rules:
+   - Use **imperative mood** (e.g., "fix bug").
+   - Keep the summary line under 70-75 characters.
+   - **CRITICAL**: Describe the problem that motivated the change.
+   - Describe user-visible impact and quantify optimizations if applicable.
+   - Explain technical details of the change.
+   - **ALWAYS** end the commit with a `Signed-off-by` line using the current git user (from `git config user.name` and `git config user.email`).
+3. **Process**:
+   - Run `git status`
+   - Run `git add .` to stage ALL changes
+   - Run `git diff --cached`
+   - Get git user info
+   - Create message and execute `git commit -m "<message>"`
+"""

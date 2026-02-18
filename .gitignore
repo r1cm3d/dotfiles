@@ -2,3 +2,12 @@
 *swp
 *cache/
 .idea/
+
+# Gemini CLI
+.gemini/google_accounts.json
+.gemini/oauth_creds.json
+.gemini/installation_id
+.gemini/state.json
+.gemini/projects.json
+.gemini/history/
+.gemini/tmp/
