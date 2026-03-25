@@ -1,0 +1,72 @@
+# Vim Modal Configuration for keyd using F8
+# F8 toggles between Insert Mode and Normal Mode
+
+[ids]
+*
+
+[main]
+# Insert Mode (default state)
+# F8 enters Normal Mode
+f8 = toggle(vim_normal)
+# CapsLock stays as CapsLock
+capslock = capslock
+
+[vim_normal]
+# Normal Mode - vim navigation and commands
+# F8 returns to Insert Mode
+f8 = toggle(vim_normal)
+
+# Vim navigation - hjkl movement
+h = left
+j = down
+k = up
+l = right
+
+# Word movement
+w = C-right
+b = C-left
+e = C-right
+
+# Line navigation
+0 = home
+4 = end  # Using 4 instead of $
+
+# Document navigation
+g = macro(C-home)
+G = C-end
+
+# Page movement
+C-u = pageup
+C-d = pagedown
+
+# Vim editing commands
+dd = macro(home S-end delete)  # Delete line
+dw = macro(C-S-right delete)   # Delete word
+y = C-c       # Yank/copy
+p = C-v       # Paste
+u = C-z       # Undo
+r = C-S-z     # Redo
+
+# Enter insert mode with vim commands
+i = toggle(vim_normal)
+a = toggle(vim_normal)
+o = toggle(vim_normal)
+I = toggle(vim_normal)  # Insert at beginning
+A = toggle(vim_normal)  # Append at end
+O = toggle(vim_normal)  # Open line above
+
+# Search
+/ = C-f
+
+# Save
+; = C-s
+
+# Numbers work normally
+1 = 1
+2 = 2
+3 = 3
+5 = 5
+6 = 6
+7 = 7
+8 = 8
+9 = 9

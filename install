@@ -32,5 +32,15 @@ cp -v .bashrc ~/.bashrc
 echo -e "\nCopying .mutt"
 cp -vfR .mutt ~/.mutt
 
+[[ -d ~/.claude ]] && (echo -e "\nCreating .claude backup" && \
+			cp -fRv ~/.claude ~/.claude.bkp)
+echo -e "\nCopying .claude"
+cp -vfR .claude ~/.claude
+
+[[ -d ~/.gemini ]] && (echo -e "\nCreating .gemini backup" && \
+			cp -fRv ~/.gemini ~/.gemini.bkp)
+echo -e "\nCopying .gemini"
+cp -vfR .gemini ~/.gemini
+
 echo -e "Reloading bash"
 exec bash
