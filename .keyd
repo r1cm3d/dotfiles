@@ -8,8 +8,6 @@
 # Insert Mode (default state)
 # F8 enters Normal Mode
 f8 = toggle(vim_normal)
-# CapsLock stays as CapsLock
-capslock = capslock
 
 [vim_normal]
 # Normal Mode - vim navigation and commands
@@ -40,6 +38,7 @@ C-u = pageup
 C-d = pagedown
 
 # Vim editing commands
+d = noop      # Disable single d to prevent typing
 dd = macro(home S-end delete)  # Delete line
 dw = macro(C-S-right delete)   # Delete word
 y = C-c       # Yank/copy

@@ -14,6 +14,7 @@ Create a commit following the project's commit guidelines (based on Linux kernel
 - Explain what you are actually doing in technical details
 
 ### Commit message format
+- **ALWAYS** start the commit title with capitalized letters: "Make xyzzy do frotz" instead of "make xyzzy do frotz" 
 - Use **imperative mood**: "make xyzzy do frotz" instead of "This patch makes xyzzy do frotz"
 - Reference bug entries by number and URL when fixing logged bugs (e.g., JIRA tickets)
 - Incluse SHA-1 (at least first 12 characters) when referencing commits
@@ -45,7 +46,7 @@ Initialize the rx_buffer pointer before checking the link status to prevent dere
 ### Separation of concerns
 - Each commit should make an easily understood change
 - Bug fixes and performance enhancements should be different commits
-- Each commit shoudl be verifiable by reviwers on its own merits
+- Each commit should be verifiable by reviwers on its own merits
 
 3. **Execute the commit** using the crafted message with propert formatting.
 
