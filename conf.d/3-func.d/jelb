@@ -1,0 +1,543 @@
+#!/bin/bash
+
+jelb() {
+  local dry_run=0
+  local verbose=0
+  local queries=()
+
+  while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
+    --dry-run)
+      dry_run=1
+      ;;
+    -v | --verbose)
+      verbose=1
+      ;;
+    -h | --help)
+      echo "Usage: jelb [--dry-run] [-v|--verbose] [-h|--help] <name> [<name>...]"
+      echo "Organize media into Jellyfin-compliant structure and download subtitles."
+      echo ""
+      echo "Searches \$MOVIES then \$TVSHOWS for each name (case-insensitive substring)."
+      echo "Renames folders/files to '<Title> (<Year>) [- SXXEYY].<ext>' and fetches"
+      echo "en + pt-BR subtitles via subliminal."
+      return 0
+      ;;
+    *)
+      echo "Error: Unknown flag: $1" >&2
+      return 1
+      ;;
+  esac; shift; done
+  if [[ "$1" == '--' ]]; then shift; fi
+
+  while [[ -n "$1" ]]; do
+    queries+=("$1")
+    shift
+  done
+
+  if [[ ${#queries[@]} -eq 0 ]]; then
+    echo "Error: No media names provided" >&2
+    echo "Usage: jelb [--dry-run] [-v|--verbose] [-h|--help] <name> [<name>...]" >&2
+    return 1
+  fi
+
+  _jelb_check_deps || return 1
+  _jelb_check_env || return 1
+
+  local exit_code=0
+  local query match match_type match_path
+  for query in "${queries[@]}"; do
+    match=$(_jelb_find_match "$query" "$verbose")
+    if [[ -z "$match" ]]; then
+      echo "No match for '$query' (score >= 1 required)" >&2
+      exit_code=2
+      continue
+    fi
+
+    match_type="${match%%|*}"
+    match_path="${match#*|}"
+
+    if [[ ! -w "$match_path" ]]; then
+      echo "Error: '$match_path' is not writable, skipping" >&2
+      exit_code=2
+      continue
+    fi
+
+    echo "==> $query → ($match_type) $(basename "$match_path")"
+    case "$match_type" in
+      movie)  _jelb_organize_movie "$match_path" "$dry_run" "$verbose" ;;
+      tvshow) _jelb_organize_show  "$match_path" "$dry_run" "$verbose" ;;
+    esac
+  done
+
+  return $exit_code
+}
+
+_jelb_check_deps() {
+  local missing=()
+  local cmd
+  for cmd in subliminal mv find awk sed stat basename dirname printf; do
+    command -v "$cmd" >/dev/null 2>&1 || missing+=("$cmd")
+  done
+
+  if [[ ${#missing[@]} -gt 0 ]]; then
+    echo "Error: Missing required commands: ${missing[*]}" >&2
+    return 1
+  fi
+  return 0
+}
+
+_jelb_check_env() {
+  if [[ -z "$MOVIES" ]]; then
+    echo "Error: \$MOVIES env var is not set" >&2
+    return 1
+  fi
+  if [[ -z "$TVSHOWS" ]]; then
+    echo "Error: \$TVSHOWS env var is not set" >&2
+    return 1
+  fi
+  if [[ ! -d "$MOVIES" ]]; then
+    echo "Error: \$MOVIES ('$MOVIES') is not a directory" >&2
+    return 1
+  fi
+  if [[ ! -d "$TVSHOWS" ]]; then
+    echo "Error: \$TVSHOWS ('$TVSHOWS') is not a directory" >&2
+    return 1
+  fi
+  return 0
+}
+
+_jelb_clean_name() {
+  local raw="$1"
+  local pat='^(.*\([0-9]{4}\))'
+  if [[ "$raw" =~ $pat ]]; then
+    local cleaned="${BASH_REMATCH[1]}"
+    cleaned="${cleaned%"${cleaned##*[![:space:]]}"}"
+    echo "$cleaned"
+    return 0
+  fi
+  return 1
+}
+
+_jelb_find_match() {
+  local query="$1"
+  local verbose="$2"
+  local query_lc="${query,,}"
+  local query_len=${#query}
+
+  local -a movie_paths=()
+  local -a show_paths=()
+  local dir base cleaned cleaned_lc score len_diff
+
+  for dir in "$MOVIES"/*/; do
+    [[ -d "$dir" ]] || continue
+    dir="${dir%/}"
+    base=$(basename "$dir")
+    cleaned=$(_jelb_clean_name "$base") || cleaned="$base"
+    cleaned_lc="${cleaned,,}"
+
+    score=0
+    if [[ "$cleaned_lc" == "$query_lc" ]]; then
+      score=1000
+    elif [[ "$cleaned_lc" == *"$query_lc"* ]]; then
+      len_diff=$((${#cleaned} - query_len))
+      score=$((100 - len_diff))
+      [[ $score -lt 1 ]] && score=1
+    fi
+
+    if [[ $score -ge 1 ]]; then
+      movie_paths+=("$dir")
+      [[ "$verbose" == "1" ]] && echo "  match (movie, score=$score): $base" >&2
+    fi
+  done
+
+  for dir in "$TVSHOWS"/*/; do
+    [[ -d "$dir" ]] || continue
+    dir="${dir%/}"
+    base=$(basename "$dir")
+    cleaned=$(_jelb_clean_name "$base") || cleaned="$base"
+    cleaned_lc="${cleaned,,}"
+
+    score=0
+    if [[ "$cleaned_lc" == "$query_lc" ]]; then
+      score=1000
+    elif [[ "$cleaned_lc" == *"$query_lc"* ]]; then
+      len_diff=$((${#cleaned} - query_len))
+      score=$((100 - len_diff))
+      [[ $score -lt 1 ]] && score=1
+    fi
+
+    if [[ $score -ge 1 ]]; then
+      show_paths+=("$dir")
+      [[ "$verbose" == "1" ]] && echo "  match (tvshow, score=$score): $base" >&2
+    fi
+  done
+
+  local total=$((${#movie_paths[@]} + ${#show_paths[@]}))
+
+  if [[ $total -eq 0 ]]; then
+    return 0
+  fi
+
+  if [[ $total -eq 1 ]]; then
+    if [[ ${#movie_paths[@]} -eq 1 ]]; then
+      echo "movie|${movie_paths[0]}"
+    else
+      echo "tvshow|${show_paths[0]}"
+    fi
+    return 0
+  fi
+
+  local i=0 idx
+  local -a all_paths=()
+  local -a all_types=()
+  echo "Multiple matches for '$query':" >&2
+  for idx in "${!movie_paths[@]}"; do
+    i=$((i+1))
+    echo "  [$i] (movie)  $(basename "${movie_paths[$idx]}")" >&2
+    all_paths+=("${movie_paths[$idx]}")
+    all_types+=("movie")
+  done
+  for idx in "${!show_paths[@]}"; do
+    i=$((i+1))
+    echo "  [$i] (tvshow) $(basename "${show_paths[$idx]}")" >&2
+    all_paths+=("${show_paths[$idx]}")
+    all_types+=("tvshow")
+  done
+
+  local choice
+  printf "Choose [1-%d] (empty to skip): " "$i" >&2
+  read -r choice </dev/tty
+
+  if [[ -z "$choice" || ! "$choice" =~ ^[0-9]+$ || "$choice" -lt 1 || "$choice" -gt "$i" ]]; then
+    echo "Skipped '$query' (invalid selection)" >&2
+    return 0
+  fi
+
+  local idx0=$((choice - 1))
+  echo "${all_types[$idx0]}|${all_paths[$idx0]}"
+  return 0
+}
+
+_jelb_do_mv() {
+  local src="$1"
+  local dst="$2"
+  local dry_run="$3"
+
+  if [[ "$dry_run" == "1" ]]; then
+    echo "  [dry-run] mv '$(basename "$src")' → '$(basename "$dst")'"
+    return 0
+  fi
+
+  if ! mv "$src" "$dst"; then
+    echo "Error: mv failed: '$src' → '$dst'" >&2
+    return 1
+  fi
+  echo "  Renamed: '$(basename "$src")' → '$(basename "$dst")'"
+  return 0
+}
+
+_jelb_extract_lang_tag() {
+  local base="$1"
+  local pat='\.([a-zA-Z]{2,3}(-[A-Za-z]{2,4})?)$'
+  if [[ "$base" =~ $pat ]]; then
+    echo "${BASH_REMATCH[1]}"
+    return 0
+  fi
+  return 1
+}
+
+_jelb_organize_movie() {
+  local movie_path="$1"
+  local dry_run="$2"
+  local verbose="$3"
+
+  local old_folder parent_dir clean_name new_path
+  old_folder=$(basename "$movie_path")
+  parent_dir=$(dirname "$movie_path")
+
+  if ! clean_name=$(_jelb_clean_name "$old_folder"); then
+    echo "  Skipping: cannot extract '(YYYY)' from '$old_folder'" >&2
+    return 0
+  fi
+
+  new_path="$parent_dir/$clean_name"
+
+  if [[ "$old_folder" != "$clean_name" ]]; then
+    if [[ -e "$new_path" ]]; then
+      echo "Error: target folder already exists: '$new_path'" >&2
+      return 0
+    fi
+    _jelb_do_mv "$movie_path" "$new_path" "$dry_run" || return 0
+    [[ "$dry_run" == "1" ]] || movie_path="$new_path"
+  else
+    [[ "$verbose" == "1" ]] && echo "  Folder already compliant: '$old_folder'"
+  fi
+
+  local -a videos=()
+  local f ext lower_ext
+  for f in "$movie_path"/*; do
+    [[ -f "$f" ]] || continue
+    ext="${f##*.}"
+    lower_ext="${ext,,}"
+    case "$lower_ext" in
+      mkv|mp4|avi|mov|wmv|m4v|webm) videos+=("$f") ;;
+    esac
+  done
+
+  if [[ ${#videos[@]} -eq 0 ]]; then
+    echo "  Warning: no video file in '$(basename "$movie_path")'" >&2
+    return 0
+  fi
+
+  if [[ ${#videos[@]} -gt 1 ]]; then
+    echo "  Warning: multiple video files in '$(basename "$movie_path")', skipping rename:" >&2
+    for f in "${videos[@]}"; do echo "    $(basename "$f")" >&2; done
+  else
+    local video="${videos[0]}"
+    local video_name video_ext video_base target_video
+    video_name=$(basename "$video")
+    video_ext="${video_name##*.}"
+    video_base="${video_name%.*}"
+    target_video="$movie_path/$clean_name.$video_ext"
+
+    if [[ "$video" != "$target_video" ]]; then
+      if [[ -e "$target_video" ]]; then
+        echo "  Warning: target video exists, skipping: '$(basename "$target_video")'" >&2
+      else
+        _jelb_do_mv "$video" "$target_video" "$dry_run"
+      fi
+    else
+      [[ "$verbose" == "1" ]] && echo "  Video already compliant: '$video_name'"
+    fi
+
+    local sub_name sub_no_ext lang_tag target_sub
+    for f in "$movie_path"/*; do
+      [[ -f "$f" ]] || continue
+      ext="${f##*.}"
+      lower_ext="${ext,,}"
+      case "$lower_ext" in
+        srt|ass|ssa|sub|vtt) ;;
+        *) continue ;;
+      esac
+
+      sub_name=$(basename "$f")
+      sub_no_ext="${sub_name%.*}"
+      lang_tag=""
+      if lang_tag=$(_jelb_extract_lang_tag "$sub_no_ext"); then
+        sub_no_ext="${sub_no_ext%.*}"
+        lang_tag=".$lang_tag"
+      fi
+
+      if [[ "$sub_no_ext" == "$video_base" || "$sub_no_ext" == "$clean_name" ]]; then
+        target_sub="$movie_path/$clean_name$lang_tag.$ext"
+        if [[ "$f" != "$target_sub" ]]; then
+          if [[ -e "$target_sub" ]]; then
+            [[ "$verbose" == "1" ]] && echo "  Skip sub (target exists): '$sub_name'"
+          else
+            _jelb_do_mv "$f" "$target_sub" "$dry_run"
+          fi
+        fi
+      else
+        [[ "$verbose" == "1" ]] && echo "  Skip unrelated sub: '$sub_name'"
+      fi
+    done
+  fi
+
+  _jelb_fetch_subs "movie" "$movie_path" "$clean_name" "$dry_run"
+  return 0
+}
+
+_jelb_parse_season() {
+  local name="$1"
+  local pat
+  pat='^[Ss]eason[ ._]?([0-9]{1,2})$'
+  if [[ "$name" =~ $pat ]]; then
+    printf "%02d" "$((10#${BASH_REMATCH[1]}))"
+    return 0
+  fi
+  pat='^[Ss]([0-9]{1,2})$'
+  if [[ "$name" =~ $pat ]]; then
+    printf "%02d" "$((10#${BASH_REMATCH[1]}))"
+    return 0
+  fi
+  pat='^[Ss]eason[ ._-]+([0-9]{1,2})'
+  if [[ "$name" =~ $pat ]]; then
+    printf "%02d" "$((10#${BASH_REMATCH[1]}))"
+    return 0
+  fi
+  return 1
+}
+
+_jelb_parse_episode() {
+  local fbase="$1"
+  local folder_season="$2"
+  local pat
+  pat='[Ss]([0-9]{1,2})[Ee]([0-9]{1,3})'
+  if [[ "$fbase" =~ $pat ]]; then
+    local s=$(printf "%02d" "$((10#${BASH_REMATCH[1]}))")
+    local e=$(printf "%02d" "$((10#${BASH_REMATCH[2]}))")
+    echo "$s|$e"
+    return 0
+  fi
+  pat='([0-9]{1,2})x([0-9]{1,3})'
+  if [[ "$fbase" =~ $pat ]]; then
+    local s=$(printf "%02d" "$((10#${BASH_REMATCH[1]}))")
+    local e=$(printf "%02d" "$((10#${BASH_REMATCH[2]}))")
+    echo "$s|$e"
+    return 0
+  fi
+  pat='[Ee]p?([0-9]{1,3})'
+  if [[ "$fbase" =~ $pat ]]; then
+    local e=$(printf "%02d" "$((10#${BASH_REMATCH[1]}))")
+    echo "$folder_season|$e"
+    return 0
+  fi
+  return 1
+}
+
+_jelb_organize_show() {
+  local show_path="$1"
+  local dry_run="$2"
+  local verbose="$3"
+
+  local old_folder parent_dir clean_name new_path
+  old_folder=$(basename "$show_path")
+  parent_dir=$(dirname "$show_path")
+
+  if ! clean_name=$(_jelb_clean_name "$old_folder"); then
+    echo "  Skipping: cannot extract '(YYYY)' from '$old_folder'" >&2
+    return 0
+  fi
+
+  new_path="$parent_dir/$clean_name"
+
+  if [[ "$old_folder" != "$clean_name" ]]; then
+    if [[ -e "$new_path" ]]; then
+      echo "Error: target folder already exists: '$new_path'" >&2
+      return 0
+    fi
+    _jelb_do_mv "$show_path" "$new_path" "$dry_run" || return 0
+    [[ "$dry_run" == "1" ]] || show_path="$new_path"
+  else
+    [[ "$verbose" == "1" ]] && echo "  Folder already compliant: '$old_folder'"
+  fi
+
+  local season_dir season_name season_num target_season
+  for season_dir in "$show_path"/*/; do
+    [[ -d "$season_dir" ]] || continue
+    season_dir="${season_dir%/}"
+    season_name=$(basename "$season_dir")
+
+    if ! season_num=$(_jelb_parse_season "$season_name"); then
+      echo "  Warning: cannot parse season from '$season_name', skipping" >&2
+      continue
+    fi
+
+    target_season="$show_path/Season $season_num"
+
+    if [[ "$season_dir" != "$target_season" ]]; then
+      if [[ -e "$target_season" ]]; then
+        echo "  Error: target season exists: '$(basename "$target_season")'" >&2
+        continue
+      fi
+      _jelb_do_mv "$season_dir" "$target_season" "$dry_run" || continue
+      [[ "$dry_run" == "1" ]] || season_dir="$target_season"
+    fi
+
+    local f ext lower_ext is_video is_subtitle fname fbase lang_tag parsed parsed_s parsed_e target
+    for f in "$season_dir"/*; do
+      [[ -f "$f" ]] || continue
+      ext="${f##*.}"
+      lower_ext="${ext,,}"
+      is_video=0
+      is_subtitle=0
+      case "$lower_ext" in
+        mkv|mp4|avi|mov|wmv|m4v|webm) is_video=1 ;;
+        srt|ass|ssa|sub|vtt) is_subtitle=1 ;;
+        *) continue ;;
+      esac
+
+      fname=$(basename "$f")
+      fbase="${fname%.*}"
+      lang_tag=""
+      if [[ $is_subtitle -eq 1 ]]; then
+        if lang_tag=$(_jelb_extract_lang_tag "$fbase"); then
+          fbase="${fbase%.*}"
+          lang_tag=".$lang_tag"
+        fi
+      fi
+
+      if ! parsed=$(_jelb_parse_episode "$fbase" "$season_num"); then
+        echo "  Warning: cannot parse episode from '$fname', skipping" >&2
+        continue
+      fi
+      parsed_s="${parsed%%|*}"
+      parsed_e="${parsed##*|}"
+
+      if [[ "$parsed_s" != "$season_num" ]]; then
+        [[ "$verbose" == "1" ]] && echo "  Note: '$fname' says S$parsed_s but folder is Season $season_num — trusting folder"
+      fi
+
+      target="$season_dir/$clean_name - S${season_num}E${parsed_e}${lang_tag}.$ext"
+
+      if [[ "$f" != "$target" ]]; then
+        if [[ -e "$target" ]]; then
+          [[ "$verbose" == "1" ]] && echo "  Skip (target exists): '$fname'"
+        else
+          _jelb_do_mv "$f" "$target" "$dry_run"
+        fi
+      else
+        [[ "$verbose" == "1" ]] && echo "  Already compliant: '$fname'"
+      fi
+    done
+  done
+
+  _jelb_fetch_subs "tvshow" "$show_path" "$clean_name" "$dry_run"
+  return 0
+}
+
+_jelb_fetch_subs() {
+  local kind="$1"
+  local path="$2"
+  local clean_name="$3"
+  local dry_run="$4"
+
+  if [[ "$kind" == "movie" ]]; then
+    if [[ -f "$path/$clean_name.en.srt" && -f "$path/$clean_name.pt-BR.srt" ]]; then
+      echo "  Subs present (en + pt-BR), skipping subliminal"
+      return 0
+    fi
+  else
+    local all_present=1
+    local season_dir ep ext lower_ext ep_base
+    for season_dir in "$path"/Season\ */; do
+      [[ -d "$season_dir" ]] || continue
+      for ep in "$season_dir"*; do
+        [[ -f "$ep" ]] || continue
+        ext="${ep##*.}"
+        lower_ext="${ext,,}"
+        case "$lower_ext" in
+          mkv|mp4|avi|mov|wmv|m4v|webm) ;;
+          *) continue ;;
+        esac
+        ep_base="${ep%.*}"
+        if [[ ! -f "$ep_base.en.srt" || ! -f "$ep_base.pt-BR.srt" ]]; then
+          all_present=0
+          break 2
+        fi
+      done
+    done
+
+    if [[ $all_present -eq 1 ]]; then
+      echo "  Subs present for all episodes, skipping subliminal"
+      return 0
+    fi
+  fi
+
+  if [[ "$dry_run" == "1" ]]; then
+    echo "  [dry-run] subliminal download -l en -l pt-BR '$path/'"
+    return 0
+  fi
+
+  echo "  Downloading subs for '$clean_name'..."
+  subliminal download -l en -l pt-BR "$path/"
+}
