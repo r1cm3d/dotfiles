@@ -1,0 +1,43 @@
+cpmov() {
+  local src_path="$1"
+
+  if [[ -z "$src_path" ]]; then
+    echo "Error: No directory path provided" >&2
+    return 1
+  fi
+
+  if [[ ! -d "$src_path" ]]; then
+    echo "Error: Directory '$src_path' does not exist" >&2
+    return 1
+  fi
+
+  local dir_name=$(basename "$src_path")
+
+  if [[ -d "$MOVIES/$dir_name" ]]; then
+    echo "Error: '$dir_name' already exists in $MOVIES" >&2
+    return 1
+  fi
+
+  if ! mv "$src_path" "$MOVIES/"; then
+    echo "Error: Failed to move '$src_path' to $MOVIES" >&2
+    return 1
+  fi
+
+  local ref_dir
+  for dir in "$MOVIES"/*; do
+    if [[ -d "$dir" && "$(basename "$dir")" != "$dir_name" ]]; then
+      ref_dir="$dir"
+      break
+    fi
+  done
+
+  if [[ -n "$ref_dir" ]]; then
+    local perms=$(stat -c '%a' "$ref_dir")
+    chmod "$perms" "$MOVIES/$dir_name"
+    echo "Moved '$dir_name' to $MOVIES and applied permissions $perms"
+  else
+    echo "Moved '$dir_name' to $MOVIES (no reference directory found for permissions)"
+  fi
+
+  return 0
+}
