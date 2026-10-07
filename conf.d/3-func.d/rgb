@@ -1,13 +1,11 @@
 cc() {
-        local COLOR=$1
-        for i in {0..1}; do
-                sudo openrgb --device "$i" --color "$COLOR" >/dev/null
+        local COLOR=${1:-00FF00}
+        local args=()
+        local device
+        for device in 0 1 2 5 6; do
+                args+=(-d "$device" -m direct -c "$COLOR")
         done
-        sudo liquidctl --match corsair set led color fixed "$COLOR" >/dev/null
-        razer-cli -d 'Razer DeathAdder V2' -c "$COLOR" >/dev/null
-        razer-cli -d 'Razer Huntsman Mini' -c "$COLOR" -e reactive >/dev/null
-        tmux set -g status-bg colour10
-        tmux set -g window-status-style fg=colour0
-        tmux set -g pane-border-style fg=colour2
-        tmux set -g pane-active-border-style fg=colour10
+        openrgb --client 127.0.0.1:6742 "${args[@]}" >/dev/null
+        sleep 1
+        liquidctl --match H100i set led color fixed "$COLOR" >/dev/null
 }
